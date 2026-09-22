@@ -25,12 +25,25 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    const root = document.documentElement;
+    root.classList.toggle("mobile-menu-open", open);
+
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
+
+    const onResize = () => {
+      if (window.innerWidth > 1120) setOpen(false);
+    };
+
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      root.classList.remove("mobile-menu-open");
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
+    };
   }, [open]);
 
   return (
